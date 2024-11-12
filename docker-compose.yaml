@@ -1,59 +1,65 @@
-version: '3.8'
-
 services:
-  postgres-1:
-    image: postgres:14
-    container_name: postgres-1
-    environment:
-      POSTGRES_USER: user1
-      POSTGRES_PASSWORD: password1
-      POSTGRES_DB: db1
+  pg_master:
+    image: postgres:16.1-alpine3.19
+    container_name: pg_master
     ports:
       - "5432:5432"
     volumes:
-      - postgres_1_data:/var/lib/postgresql/data
-
-  postgres-2:
-    image: postgres:14
-    container_name: postgres-2
+      - pg_master_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: user2
-      POSTGRES_PASSWORD: password2
-      POSTGRES_DB: db2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - pg-network
+
+  pg_replica_1:
+    image: postgres:16.1-alpine3.19
+    container_name: pg_replica_1
     ports:
       - "5433:5432"
     volumes:
-      - postgres_2_data:/var/lib/postgresql/data
-
-  postgres-3:
-    image: postgres:14
-    container_name: postgres-3
+      - pg_replica_1_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: user3
-      POSTGRES_PASSWORD: password3
-      POSTGRES_DB: db3
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - pg-network
+
+  pg_replica_2:
+    image: postgres:16.1-alpine3.19
+    container_name: pg_replica_2
     ports:
       - "5434:5432"
     volumes:
-      - postgres_3_data:/var/lib/postgresql/data
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
+      - pg_replica_2_data:/var/lib/postgresql/data
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - pg-network
+
+  pg_admin:
+    container_name: pg_admin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
-    depends_on:
-      - postgres-1
-      - postgres-2
-      - postgres-3
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - pg_admin_data:/var/lib/pgadmin
+    networks:
+      - pg-network
 
 volumes:
-  postgres_1_data:
-  postgres_2_data:
-  postgres_3_data:
-  pgadmin_data:
+  pg_master_data:
+  pg_replica_1_data:
+  pg_replica_2_data:
+  pg_admin_data:
+
+networks:
+  pg-network:
+    driver: bridge
