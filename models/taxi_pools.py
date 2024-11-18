@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, String, ForeignKey
-from config import Base, fake
+from core.config import Base, fake
 
 class TaxiPoolsModel(Base):
     __tablename__ = 'taxi_pools'

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, SmallInteger
-from config import Base, fake
+from core.config import Base, fake
 
 class DriversModel(Base):
     __tablename__ = 'drivers'

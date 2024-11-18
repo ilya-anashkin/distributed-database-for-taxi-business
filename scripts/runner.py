@@ -1,5 +1,5 @@
 from delete_tables import delete_tables
-from create_tables import create_tables
+from core.table_manager import create_tables
 from add_records import add_fake_records
 
 def __run():
