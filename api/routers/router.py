@@ -1,6 +1,34 @@
-from fastapi import APIRouter
-from api.routers.insert_router import router as create_table_router
+from fastapi import APIRouter, HTTPException
+from core.table_manager import TableManager
+from schemas.insert_schema import InsertSchema
+from schemas.update_schema import UpdateSchema
+from schemas.get_schema import GetSchema
 
 router = APIRouter()
 
-router.include_router(create_table_router, prefix="/create_table")
+@router.post('/insert')
+async def insert(schema: InsertSchema):
+	try:
+		TableManager.insert(schema.columns)
+
+		return {"message": "Record inserted successfully"}
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=str(e))
+
+@router.put('/update')
+async def update(schema: UpdateSchema):
+	try:
+		TableManager.update(schema)
+
+		return {"message": "Record updated successfully"}
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=str(e))
+
+@router.get('/get')
+async def get(schema: GetSchema):
+	try:
+		record = TableManager.get(schema)
+
+		return {"record": record}
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=str(e))
