@@ -1,5 +1,4 @@
 from typing import Type, Any
-from schemas.insert_schema import TableSchema
 from core.config import engine, session, Base
 from schemas.insert_schema import InsertSchema
 from schemas.update_schema import UpdateSchema

@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine
 from core.config import engine
-
-from models_provider import all_models
+from core.models_provider import all_models
 
 def delete_tables():
     """
