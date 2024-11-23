@@ -1,9 +1,8 @@
 from typing import Type, Any
-from core.config import engine, session, Base
+from core.config import session
 from schemas.insert_schema import InsertSchema
 from schemas.update_schema import UpdateSchema
 from schemas.get_schema import GetSchema
-import models
 
 class TableManager:
     @staticmethod
@@ -40,12 +39,12 @@ class TableManager:
         except ValueError as e:
             raise e
 
-        records = session.query(model_cls).all()
+        record = session.query(model_cls).filter_by(id=model.id).first()
 
-        if not records:
-            raise ValueError(f"No records found in table {model.table_name}")
+        if not record:
+            raise ValueError(f"Record with id {model.id} not found in table {model.table_name}")
 
-        return records[0]
+        return record
 
     @staticmethod
     def __get_model_cls(table_name: str) -> Type:
