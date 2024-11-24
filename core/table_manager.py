@@ -6,6 +6,7 @@ from schemas.get_schema import GetSchema
 
 from models import *
 
+
 class TableManager:
     @staticmethod
     def insert(model: InsertSchema):
@@ -44,13 +45,15 @@ class TableManager:
         record = session.query(model_cls).filter_by(id=model.id).first()
 
         if not record:
-            raise ValueError(f"Record with id {model.id} not found in table {model.table_name}")
+            raise ValueError(
+                f"Record with id {model.id} not found in table {model.table_name}"
+            )
 
         return record
 
     @staticmethod
     def __get_model_cls(table_name: str) -> Type:
-        model_cls_name = table_name.capitalize() + 'Model'
+        model_cls_name = table_name.capitalize() + "Model"
         model_cls = globals().get(model_cls_name)
         if model_cls:
             return model_cls

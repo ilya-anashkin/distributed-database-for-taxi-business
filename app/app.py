@@ -14,10 +14,7 @@ def init_routers(fastapi_app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    fastapi_app = FastAPI(
-        title='API',
-        version='1.0.0'
-    )
+    fastapi_app = FastAPI(title="API", version="1.0.0")
 
     init_routers(fastapi_app=fastapi_app)
 

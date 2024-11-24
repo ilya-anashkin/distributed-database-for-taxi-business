@@ -8,5 +8,6 @@ def __run():
     create_tables()
     add_fake_records()
 
+
 if __name__ == "__main__":
     __run()

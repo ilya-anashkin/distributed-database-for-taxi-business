@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from core.config import engine
 from core.models_provider import all_models
 
+
 def delete_tables():
     """
     Delete tables in the database
@@ -16,6 +17,7 @@ def delete_tables():
             print(f"❌ Error deleting table {model.__name__}: {e}")
 
     print("✅ All tables deleted")
+
 
 if __name__ == "__main__":
     delete_tables()
