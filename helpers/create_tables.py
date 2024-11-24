@@ -1,4 +1,4 @@
-from config import engine, Base
+from core.config import engine, Base
 import models
 
 def create_tables():

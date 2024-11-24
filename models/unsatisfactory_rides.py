@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, SmallInteger, Float
-from config import Base, fake
+from core.config import Base, fake
 
 class UnsatisfactoryRidesModel(Base):
     __tablename__ = 'unsatisfactory_rides'

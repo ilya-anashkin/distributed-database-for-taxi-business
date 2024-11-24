@@ -1,9 +1,7 @@
 import inspect
 
-# from models import *
-
-from config import Base, session
-from models_provider import all_models
+from core.config import Base, session
+from core.models_provider import all_models
 
 def __add_fake_records_for_model(model_cls):
     for _ in range(10):

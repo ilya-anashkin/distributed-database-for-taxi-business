@@ -1,4 +1,6 @@
 Faker
+fastapi
 psycopg2-binary
 python-dotenv
 SQLAlchemy
+uvicorn

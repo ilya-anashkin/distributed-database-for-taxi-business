@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, ForeignKey
-from config import Base, fake
+from core.config import Base, fake
 
 class CarModelsRBIModel(Base):
     __tablename__ = 'car_models_rbi'
