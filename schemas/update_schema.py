@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
+
 class UpdateSchema(BaseModel):
-	table_name: str
-	id: int
-	columns: dict
+    table_name: str
+    id: int
+    columns: dict
