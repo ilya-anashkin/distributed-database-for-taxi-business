@@ -12,7 +12,7 @@ from models.car_models import CarModelsModel
 import datetime
 from sqlalchemy import func
 
-router = APIRouter()
+router = APIRouter(prefix='/drivers')
 
 @router.get('/history')
 async def get_history(id: int):

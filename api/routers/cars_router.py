@@ -3,7 +3,7 @@ from core.config import session
 from models.cars import CarsModel
 from sqlalchemy import func
 
-router = APIRouter()
+router = APIRouter(prefix='/cars')
 
 @router.get('/no_inspection')
 async def get_cars_no_inspection(years: int):

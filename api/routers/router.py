@@ -9,7 +9,7 @@ router = APIRouter()
 @router.post('/insert')
 async def insert(schema: InsertSchema):
 	try:
-		TableManager.insert(schema.columns)
+		TableManager.insert(schema)
 
 		return {"message": "Record inserted successfully"}
 	except Exception as e:

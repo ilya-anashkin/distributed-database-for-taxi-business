@@ -4,6 +4,8 @@ from schemas.insert_schema import InsertSchema
 from schemas.update_schema import UpdateSchema
 from schemas.get_schema import GetSchema
 
+from models import *
+
 class TableManager:
     @staticmethod
     def insert(model: InsertSchema):
@@ -12,7 +14,7 @@ class TableManager:
         except ValueError as e:
             raise e
 
-        record = model_cls(model.columns)
+        record = model_cls(**model.columns)
         session.add(record)
         session.commit()
 
@@ -48,7 +50,7 @@ class TableManager:
 
     @staticmethod
     def __get_model_cls(table_name: str) -> Type:
-        model_cls_name = table_name + 'Model'
+        model_cls_name = table_name.capitalize() + 'Model'
         model_cls = globals().get(model_cls_name)
         if model_cls:
             return model_cls
