@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.routers.router import router
 from api.routers.drivers_router import router as drivers_router
@@ -15,6 +16,14 @@ def init_routers(fastapi_app: FastAPI):
 
 def create_app() -> FastAPI:
     fastapi_app = FastAPI(title="API", version="1.0.0")
+
+    fastapi_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     init_routers(fastapi_app=fastapi_app)
 
