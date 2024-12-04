@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from core.config import session
@@ -12,10 +14,12 @@ from models.car_models import CarModelsModel
 import datetime
 from sqlalchemy import func
 
-router = APIRouter(prefix="/drivers")
+from schemas.common import Record
+
+router = APIRouter(prefix='/drivers')
 
 
-@router.get("/history")
+@router.get('/history', response_model=List[Record])
 async def get_history(id: int):
     result = (
         session.query(
@@ -30,8 +34,12 @@ async def get_history(id: int):
         .all()
     )
 
-    return result
+    records: List[Record] = [
+        Record(id=item[0], price=item[1], order_date=item[2], client_feedback_stars=item[3], client_feedback_review=item[4])
+        for item in result
+    ]
 
+    return records
 
 @router.get("/rents_history")
 async def get_car_info(id: int):
@@ -51,8 +59,7 @@ async def get_car_info(id: int):
 
     return result
 
-
-@router.get("/current_taxi_pool")
+@router.get('/current_taxi_pool')
 async def get_current_taxi_pool(id: int):
     result = (
         session.query(
@@ -69,8 +76,7 @@ async def get_current_taxi_pool(id: int):
 
     return result
 
-
-@router.get("/registered_before")
+@router.get('/registered_before')
 async def get_registered_before(date: str):
     result = (
         session.query(DriversModel)
@@ -82,8 +88,7 @@ async def get_registered_before(date: str):
 
     return result
 
-
-@router.get("/with_status")
+@router.get('/with_status')
 async def get_with_status(status: int, employment_status: int):
     result = (
         session.query(DriversModel)
@@ -97,8 +102,7 @@ async def get_with_status(status: int, employment_status: int):
 
     return result
 
-
-@router.get("/with_high_rating")
+@router.get('/with_high_rating')
 async def get_with_high_rating(rating: int):
     result = (
         session.query(
