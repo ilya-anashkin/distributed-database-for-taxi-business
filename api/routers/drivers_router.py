@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from core.config import session
@@ -12,9 +14,12 @@ from models.car_models import CarModelsModel
 import datetime
 from sqlalchemy import func
 
+from schemas.common import Record
+
 router = APIRouter(prefix='/drivers')
 
-@router.get('/history')
+
+@router.get('/history', response_model=List[Record])
 async def get_history(id: int):
     result = session.query(
         RidesModel.id,
@@ -26,7 +31,12 @@ async def get_history(id: int):
         CarRentsModel.driver_id == id
     ).all()
 
-    return result
+    records: List[Record] = [
+        Record(id=item[0], price=item[1], order_date=item[2], client_feedback_stars=item[3], client_feedback_review=item[4])
+        for item in result
+    ]
+
+    return records
 
 @router.get('/rents_history')
 async def get_car_info(id: int):
