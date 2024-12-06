@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from core.table_manager import TableManager
 from schemas.insert_schema import InsertSchema
 from schemas.update_schema import UpdateSchema
-from schemas.get_schema import GetSchema
+from schemas.get_schema import GetSchema, GetAllSchema
 
 router = APIRouter()
 
@@ -33,5 +33,14 @@ async def get(schema: GetSchema):
         record = TableManager.get(schema)
 
         return {"record": record}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/get_all")
+async def get(schema: GetAllSchema):
+    try:
+        record = TableManager.get_all(schema)
+
+        return record
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
