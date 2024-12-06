@@ -12,7 +12,7 @@ for DB_PORT in 5432 5433 5434; do
     echo
     echo "Create table on $DB_PORT..."
     echo
-    python -m helpers.create_tables
+    python3 -m helpers.create_tables
 done
 
 max_number_of_replicas=20

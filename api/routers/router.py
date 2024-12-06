@@ -28,7 +28,8 @@ async def update(schema: UpdateSchema):
 
 
 @router.get("/get")
-async def get(schema: GetSchema):
+async def get(table_name: str, id: int, db_id: str):
+    schema = GetSchema(table_name=table_name, id=id, db_id=db_id)
     try:
         record = TableManager.get(schema)
 
@@ -37,10 +38,29 @@ async def get(schema: GetSchema):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/get_all")
-async def get(schema: GetAllSchema):
+async def get(table_name: str, db_id: str):
+    schema = GetAllSchema(table_name=table_name, db_id=db_id)
     try:
         record = TableManager.get_all(schema)
 
         return record
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.delete("/delete")
+async def delete(schema: GetSchema):
+    try:
+        TableManager.delete(schema)
+
+        return {"message": "Record deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.delete("/delete_all")
+async def delete_all(schema: GetAllSchema):
+    try:
+        TableManager.delete_all(schema)
+
+        return {"message": "All records deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
