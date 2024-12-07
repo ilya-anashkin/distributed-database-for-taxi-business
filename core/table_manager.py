@@ -1,5 +1,5 @@
 from typing import Type, Any
-from core.config import session
+from core.config import sessions
 from schemas.insert_schema import InsertSchema
 from schemas.update_schema import UpdateSchema
 from schemas.get_schema import GetSchema, GetAllSchema
@@ -16,6 +16,7 @@ class TableManager:
             raise e
 
         record = model_cls(**model.columns)
+        session = sessions.get(model.db_id)
         session.add(record)
         session.commit()
 
@@ -26,6 +27,7 @@ class TableManager:
         except ValueError as e:
             raise e
 
+        session = sessions.get(model.db_id)
         record = session.query(model_cls).filter_by(id=model.id).first()
         if not record:
             raise ValueError(f"Record with id {model.id} not found")
@@ -42,6 +44,7 @@ class TableManager:
         except ValueError as e:
             raise e
 
+        session = sessions.get(model.db_id)
         record = session.query(model_cls).filter_by(id=model.id).first()
 
         if not record:
@@ -58,6 +61,7 @@ class TableManager:
         except ValueError as e:
             raise e
 
+        session = sessions.get(model.db_id)
         record = session.query(model_cls).all()
 
         print(record, 555)
@@ -68,6 +72,37 @@ class TableManager:
             )
 
         return record
+
+    @staticmethod
+    def delete(model: GetSchema):
+        try:
+            model_cls = TableManager.__get_model_cls(model.table_name)
+        except ValueError as e:
+            raise e
+
+        session = sessions.get(model.db_id)
+        record = session.query(model_cls).filter_by(id=model.id).first()
+        if not record:
+            raise ValueError(f"Record with id {model.id} not found")
+
+        session.delete(record)
+        session.commit()
+
+    @staticmethod
+    def delete_all(model: GetAllSchema):
+        try:
+            model_cls = TableManager.__get_model_cls(model.table_name)
+        except ValueError as e:
+            raise e
+
+        session = sessions.get(model.db_id)
+        record = session.query(model_cls).all()
+        if not record:
+            raise ValueError(f"Record with id {model.id} not found")
+
+        for rec in record:
+            session.delete(rec)
+        session.commit()
 
     @staticmethod
     def __get_model_cls(table_name: str) -> Type:

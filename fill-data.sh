@@ -12,5 +12,5 @@ for DB_PORT in 5432 5433 5434; do
     echo
     echo "Fill data on $DB_PORT..."
     echo
-    python -m helpers.add_records
+    python3 -m helpers.add_records
 done

@@ -1,8 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter
-from sqlalchemy.orm import Session
-from core.config import session
+from core.config import sessions
 from models.rides import RidesModel
 from models.drivers import DriversModel
 from models.drivers_states import DriversStatesModel
@@ -20,7 +19,8 @@ router = APIRouter(prefix='/drivers')
 
 
 @router.get('/history', response_model=List[Record])
-async def get_history(id: int):
+async def get_history(id: int, bd_id: str):
+    session = sessions[bd_id]
     result = (
         session.query(
             RidesModel.id,
@@ -42,7 +42,8 @@ async def get_history(id: int):
     return records
 
 @router.get("/rents_history")
-async def get_car_info(id: int):
+async def get_car_info(id: int, bd_id: str):
+    session = sessions[bd_id]
     result = (
         session.query(
             CarModelsModel.model,
@@ -57,10 +58,22 @@ async def get_car_info(id: int):
         .all()
     )
 
-    return result
+    response = [
+        {
+            "model": row[0],
+            "vin_number": row[1],
+            "register_date": row[2],
+            "unregister_date": row[3],
+        }
+        for row in result
+    ]
 
-@router.get('/current_taxi_pool')
-async def get_current_taxi_pool(id: int):
+    return response
+
+
+@router.get("/current_taxi_pool")
+async def get_current_taxi_pool(id: int, bd_id: str):
+    session = sessions[bd_id]
     result = (
         session.query(
             CarsModel.taxi_pool_id,
@@ -74,10 +87,23 @@ async def get_current_taxi_pool(id: int):
         .all()
     )
 
-    return result
+    response = [
+        {
+            "taxi_pool_id": row[0],
+            "driver_id": row[1],
+            "vin_number": row[2],
+            "register_date": row[3],
+            "unregister_date": row[4],
+        }
+        for row in result
+    ]
 
-@router.get('/registered_before')
-async def get_registered_before(date: str):
+    return response
+
+
+@router.get("/registered_before")
+async def get_registered_before(date: str, bd_id: str):
+    session = sessions[bd_id]
     result = (
         session.query(DriversModel)
         .filter(
@@ -88,8 +114,10 @@ async def get_registered_before(date: str):
 
     return result
 
-@router.get('/with_status')
-async def get_with_status(status: int, employment_status: int):
+
+@router.get("/with_status")
+async def get_with_status(status: int, employment_status: int, bd_id: str):
+    session = sessions[bd_id]
     result = (
         session.query(DriversModel)
         .join(DriversStatesModel, DriversStatesModel.driver_id == DriversModel.id)
@@ -102,16 +130,23 @@ async def get_with_status(status: int, employment_status: int):
 
     return result
 
-@router.get('/with_high_rating')
-async def get_with_high_rating(rating: int):
+
+@router.get("/with_high_rating")
+async def get_with_high_rating(rating: int, bd_id: str):
+    session = sessions[bd_id]
     result = (
         session.query(
             DriversModel.taxi_pool_id, func.count(DriversModel.id).label("count")
         )
-        .join(RidesModel, RidesModel.driver_id == DriversModel.id)
+        .join(CarRentsModel, CarRentsModel.driver_id == DriversModel.id)
+        .join(RidesModel, RidesModel.car_rent_id == CarRentsModel.id)
         .filter(RidesModel.client_feedback_stars >= rating)
         .group_by(DriversModel.taxi_pool_id)
         .all()
     )
 
-    return result
+    response = [
+        {"taxi_pool_id": row[0], "count": row[1]} for row in result
+    ]
+
+    return response
